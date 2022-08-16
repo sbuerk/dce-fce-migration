@@ -1,0 +1,58 @@
+{
+  "name": "sbuerk/dce-fce-migration",
+  "description": "Specialist dce to fce migration toolchain",
+  "type": "typo3-cms-extension",
+  "license": [
+    "GPL-2.0-or-later"
+  ],
+  "authors": [
+    {
+      "name": "Stefan Bürk",
+      "email": "stefan@buerk.tech",
+      "role": "Maintainer"
+    }
+  ],
+  "require": {
+    "ext-json": "*",
+    "php": "^7.2",
+    "typo3/cms-core": "^10.4"
+  },
+  "require-dev": {
+    "typo3/cms-composer-installers": "^3.0",
+    "typo3/cms-backend": "^10.4",
+    "typo3/coding-standards": "^0.5.5",
+    "typo3/testing-framework": "^6.16.6"
+  },
+  "config": {
+    "allow-plugins": {
+      "typo3/class-alias-loader": true,
+      "typo3/cms-composer-installers": true
+    },
+    "bin-dir": ".Build/bin",
+    "platform": {
+      "php": "7.2.5"
+    },
+    "sort-packages": true,
+    "vendor-dir": ".Build/vendor"
+  },
+  "autoload": {
+    "psr-4": {
+      "SB\\DceFceMigration\\": "Classes/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "SB\\DceFceMigration\\Tests\\": "Tests/"
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-main": "0.x-dev"
+    },
+    "typo3/cms": {
+      "app-dir": ".Build",
+      "web-dir": ".Build/Web",
+      "extension-key": "dce_fce_migration"
+    }
+  }
+}

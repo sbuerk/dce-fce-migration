@@ -1,0 +1,16 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  SB\DceFceMigration\:
+    resource: '../Classes/*'
+
+  SB\DceFceMigration\Command\DceMigrationCommand:
+    tags:
+      - name: 'console.command'
+        command: 'dce2fce:migrate'
+        description: 'DCE to FCE Migrations'
+        hidden: false
+        schedulable: false
