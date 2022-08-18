@@ -4,9 +4,6 @@ services:
     autoconfigure: true
     public: false
 
-  SB\DceFceMigration\:
-    resource: '../Classes/*'
-
   SB\DceFceMigration\Command\DceMigrationCommand:
     tags:
       - name: 'console.command'
