@@ -42,6 +42,7 @@ class DceMigrationCommand extends Command
 
     protected function configure()
     {
+        $this->addOption('select', null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Select migrations by identifier');
         $this->addOption('run', 'r', InputOption::VALUE_NONE, 'Run migrations', null);
     }
 
@@ -61,7 +62,9 @@ class DceMigrationCommand extends Command
         $this
             ->init($input, $output)
             ->drawTitle();
-        $run = (bool)$this->input->getOption('run');
+        $run = $this->input->getOption('run');
+        $runSelection = $this->input->getOption('select');
+
         if (!$hasMigrations || !$run) {
             $this->listMigrations();
             return 0;
@@ -70,18 +73,26 @@ class DceMigrationCommand extends Command
 
         // @todo Add before all migrations event
 
-        $this->runMigrations();
+        $this->runMigrations($runSelection);
 
         // @todo Add after all migrations event
 
         return 0;
     }
 
-    protected function runMigrations(): DceMigrationCommand
+    protected function runMigrations(array $runSelection): DceMigrationCommand
     {
         foreach ($this->migrations as $migrationClass) {
             if ($instance = $this->createMigrationInstance($migrationClass)) {
-                $this->style->section($instance->getDescription());
+                $description = $instance->getDescription();
+                $identifier = $instance->getIdentifier();
+                $section = $description . ' [' . $identifier . ']';
+                if (!empty($identifier) && $runSelection !== [] && !in_array($identifier, $runSelection)) {
+                    $this->style->section($section);
+                    $this->style->note('Skipped due not included in selection: ', implode(', ', $runSelection));
+                    continue;
+                }
+                $this->style->section($section);
                 $instance->process();
             }
         }
@@ -103,14 +114,23 @@ class DceMigrationCommand extends Command
         $list = [];
         foreach ($this->migrations as $migrationClass) {
             if ($instance = $this->createMigrationInstance($migrationClass)) {
-                $list[] = sprintf('%40s : %s', $migrationClass, $instance->getDescription());
+                $list[] = [
+                    $migrationClass,
+                    $instance->getDescription(),
+                    $instance->getIdentifier(),
+                ];
             }
         }
 
         $this->style->section('List of migrations');
-        foreach ($list as $l) {
-            $this->style->writeln($l);
-        }
+        $this->style->table(
+            [
+                'Class',
+                'Description',
+                'Identifier',
+            ],
+            $list
+        );
 
         $this->style->writeln('');
         $this->style->success('FINISHED');

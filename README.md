@@ -25,6 +25,8 @@ must be provided by the instance. They must be registered, so the command can pi
 ```shell
 $ vendor/bin/typo3 dce2fce:migrate              # list migrations
 $ vendor/bin/typo3 dce2fce:migrate --run        # run all registered migrations
+$ vendor/bin/typo3 dce3fce:migrate --run \      # run only selected migration(s)
+  --select="dce 1" --select="dce 2"             # using the select option to select by identifiers
 ```
 
 Migrations are registered with the global `$GLOBALS['DCE_FCE_MIGRATIONS']`:

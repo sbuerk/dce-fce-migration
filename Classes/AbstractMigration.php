@@ -465,6 +465,18 @@ abstract class AbstractMigration
         return $this->_description;
     }
 
+    public function getIdentifier(): string
+    {
+        $replaces = [
+            ' ' => '-',
+        ];
+        return trim(str_replace(
+            array_keys($replaces),
+            array_values($replaces),
+            mb_strtolower($this->getDescription())
+        ), '-_ ');
+    }
+
     protected function addDynamicDefault(array &$default): void
     {
     }
