@@ -43,3 +43,19 @@ $GLOBALS['DCE_FCE_MIGRATIONS'] = array_replace(
 [ ] Explain basic migration sets templates
 [ ] Add tests to cover the functionality
 
+## Tagging and releasing
+
+packagist.org is enabled via the casual github hook. TER releases are created by the "publish.yml" github workflow when tagging versions using tailor. The commit message of the tagged commit is used as TER upload comment.
+
+> @todo TER Release not implemented yet
+
+Example:
+
+```shell
+composer install
+.Build/bin/tailor set-version 0.2.0 --no-docs
+git commit -am "[RELEASE] 0.2.0 Bug fixes and improved core v11 compatibility"
+git tag 0.2.0
+git push
+git push --tags
+```
