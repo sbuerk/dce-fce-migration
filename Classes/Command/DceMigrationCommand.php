@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SB\DceFceMigration\Command;
 
-use Imp\ImpThemeFce\AbstractMigration;
+use SB\DceFceMigration\AbstractMigration;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -136,6 +136,8 @@ class DceMigrationCommand extends Command
                 if ($instance instanceof AbstractMigration) {
                     return $instance;
                 }
+            } else {
+                $this->style->error('Could not find ' . $migrationClass . ' - try composer install or composer dump-autoload.');
             }
         } catch (Throwable $t) {
             $this->style->error((string)$t);
