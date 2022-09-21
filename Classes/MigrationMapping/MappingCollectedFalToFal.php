@@ -91,6 +91,15 @@ class MappingCollectedFalToFal extends AbstractMapping
                 $srcFile = $isFileReference ? $srcFileReference->getOriginalFile() : $srcFileReference;
                 switch ($dstType) {
                     case 'row':
+                        $additionalData = [
+                            'title'             => static::nullIfEmptyString($isFileReference ? $srcFileReference->getReferenceProperty('title')      : ''),
+                            'description'       => static::nullIfEmptyString($isFileReference ? $srcFileReference->getReferenceProperty('description'): ''),
+                            'alternative'       => static::nullIfEmptyString($isFileReference ? $srcFileReference->getReferenceProperty('alternative'): ''),
+                            'link'              => static::nullIfEmptyString($isFileReference ? $srcFileReference->getReferenceProperty('link')       : ''),
+                        ];
+                        if (array_key_exists('showinpreview', $GLOBALS['TCA']['sys_file_reference']['columns'] ?? [])) {
+                            $additionalData['showinpreview'] = $isFileReference ? $srcFileReference->getReferenceProperty('showinpreview') : $srcFile->getProperty('showinpreview');
+                        }
                         $migrationHelper->addRecordFalImage(
                             $item,
                             $dstTable,
@@ -98,18 +107,21 @@ class MappingCollectedFalToFal extends AbstractMapping
                             $item['srcPid'],
                             $dstFieldName,
                             $srcFile,
-                            [
-                                'title' => static::nullIfEmptyString($isFileReference ? $srcFileReference->getReferenceProperty('title') : ''),
-                                'description' => static::nullIfEmptyString($isFileReference ? $srcFileReference->getReferenceProperty('description') : ''),
-                                'alternative' => static::nullIfEmptyString($isFileReference ? $srcFileReference->getReferenceProperty('alternative') : ''),
-                                'link' => static::nullIfEmptyString($isFileReference ? $srcFileReference->getReferenceProperty('link') : ''),
-                                'showinpreview' => $isFileReference ? $srcFileReference->getReferenceProperty('showinpreview') : $srcFile->getProperty('showinpreview'),
-                            ],
+                            $additionalData,
                             $dst
                         );
                         break;
 
                     case 'flex':
+                        $additionalData = [
+                            'title'             => static::nullIfEmptyString($isFileReference ? $srcFileReference->getReferenceProperty('title')      : ''),
+                            'description'       => static::nullIfEmptyString($isFileReference ? $srcFileReference->getReferenceProperty('description'): ''),
+                            'alternative'       => static::nullIfEmptyString($isFileReference ? $srcFileReference->getReferenceProperty('alternative'): ''),
+                            'link'              => static::nullIfEmptyString($isFileReference ? $srcFileReference->getReferenceProperty('link')       : ''),
+                        ];
+                        if (array_key_exists('showinpreview', $GLOBALS['TCA']['sys_file_reference']['columns'] ?? [])) {
+                            $additionalData['showinpreview'] = $isFileReference ? $srcFileReference->getReferenceProperty('showinpreview') : $srcFile->getProperty('showinpreview');
+                        }
                         $migrationHelper->addFlexFalImage(
                             $item,
                             $dstTable,
@@ -117,13 +129,7 @@ class MappingCollectedFalToFal extends AbstractMapping
                             $item['srcPid'],
                             $dstFieldName,
                             $srcFile,
-                            [
-                                'title' => static::nullIfEmptyString($isFileReference ? $srcFileReference->getReferenceProperty('title') : ''),
-                                'description' => static::nullIfEmptyString($isFileReference ? $srcFileReference->getReferenceProperty('description') : ''),
-                                'alternative' => static::nullIfEmptyString($isFileReference ? $srcFileReference->getReferenceProperty('alternative') : ''),
-                                'link' => static::nullIfEmptyString($isFileReference ? $srcFileReference->getReferenceProperty('link') : ''),
-                                'showinpreview' => $isFileReference ? $srcFileReference->getReferenceProperty('showinpreview') : $srcFile->getProperty('showinpreview'),
-                            ],
+                            $additionalData,
                             $dst['flex'],
                             $dstPath
                         );
