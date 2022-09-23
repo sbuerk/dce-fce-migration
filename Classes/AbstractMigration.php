@@ -209,9 +209,10 @@ abstract class AbstractMigration
         return $this;
     }
 
-    final protected function processMapping(array &$item)
+    final protected function processMapping(array &$item, array $destinationMapping = null)
     {
-        if ($this->destinationMapping()) {
+        $destinationMapping = $destinationMapping ?? $this->destinationMapping();
+        if ($destinationMapping !== []) {
             $src = [
                 'row' => $item['source'],
                 'flex' => $item['flex'],
@@ -225,7 +226,7 @@ abstract class AbstractMigration
                 'flex' => $item['destination']['flex'],
             ];
             $this->migrationHelper()->doMapping(
-                $this->destinationMapping(),
+                $destinationMapping,
                 $src,
                 $dst,
                 $item
