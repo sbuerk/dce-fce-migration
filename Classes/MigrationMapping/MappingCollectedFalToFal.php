@@ -23,6 +23,7 @@ class MappingCollectedFalToFal extends AbstractMapping
      * @param string $dst <type>.<path>   Types: row,flex
      * @param string $srcTable
      * @param string $dstTable
+     * @param array<int, array<string, string|int|float|bool|null>> $falImagesAdditionalData
      *
      * @return string[]
      */
@@ -30,7 +31,8 @@ class MappingCollectedFalToFal extends AbstractMapping
         string $src,
         string $dst,
         string $srcTable = 'tt_content',
-        string $dstTable = 'tt_content'
+        string $dstTable = 'tt_content',
+        array $falImagesAdditionalData = []
     ): array {
         return [
             'mapping_type' => self::TYPE,
@@ -40,6 +42,8 @@ class MappingCollectedFalToFal extends AbstractMapping
 
             'srcTable' => $srcTable,
             'dstTable' => $dstTable,
+
+            'falImagesAdditionalData' => $falImagesAdditionalData ?? [],
         ];
     }
 
@@ -55,6 +59,11 @@ class MappingCollectedFalToFal extends AbstractMapping
         [$dstType, $dstPath] = self::splitFieldTypePath((string)($options['dst'] ?? ''));
         $srcTable = $options['srcTable'] ?? 'tt_content';
         $dstTable = $options['dstTable'] ?? 'tt_content';
+
+        $falImagesAdditionalData = $options['falImagesAdditionalData'] ?? [];
+        if (!is_array($falImagesAdditionalData)) {
+            $falImagesAdditionalData = [];
+        }
 
         if (empty($srcType)) {
             $io->writeln('[E] CollectedFalToFal Mapping Source Type not defined (row or flex)');
@@ -85,7 +94,8 @@ class MappingCollectedFalToFal extends AbstractMapping
         $srcValue = ArrayUtility::getValueByPath($src[$srcType], $srcPath, '/');
         if (is_array($srcValue) && !empty($srcValue)) {
             /** @var FileReference[] $srcValue */
-            foreach ($srcValue as $srcFileReference) {
+            foreach ($srcValue as $index => $srcFileReference) {
+                $index = (int)$index;
                 $isFileReference = $srcFileReference instanceof FileReference;
                 /** @var File $srcFile */
                 $srcFile = $isFileReference ? $srcFileReference->getOriginalFile() : $srcFileReference;
@@ -99,6 +109,14 @@ class MappingCollectedFalToFal extends AbstractMapping
                         ];
                         if (array_key_exists('showinpreview', $GLOBALS['TCA']['sys_file_reference']['columns'] ?? [])) {
                             $additionalData['showinpreview'] = $isFileReference ? $srcFileReference->getReferenceProperty('showinpreview') : $srcFile->getProperty('showinpreview');
+                        }
+                        if (array_key_exists($index, $falImagesAdditionalData) && is_array($falImagesAdditionalData[$index] ?? null) && $falImagesAdditionalData[$index] !== []) {
+                            foreach($falImagesAdditionalData[$index] as $falImageAdditionalDataKey => $falImageAdditionalDataValue) {
+                                if (!array_key_exists($falImageAdditionalDataKey, $GLOBALS['TCA']['sys_file_reference']['columns'] ?? [])) {
+                                    continue;
+                                }
+                                $additionalData[$falImageAdditionalDataKey] = $falImageAdditionalDataValue;
+                            }
                         }
                         $migrationHelper->addRecordFalImage(
                             $item,
@@ -121,6 +139,14 @@ class MappingCollectedFalToFal extends AbstractMapping
                         ];
                         if (array_key_exists('showinpreview', $GLOBALS['TCA']['sys_file_reference']['columns'] ?? [])) {
                             $additionalData['showinpreview'] = $isFileReference ? $srcFileReference->getReferenceProperty('showinpreview') : $srcFile->getProperty('showinpreview');
+                        }
+                        if (array_key_exists($index, $falImagesAdditionalData) && is_array($falImagesAdditionalData[$index] ?? null) && $falImagesAdditionalData[$index] !== []) {
+                            foreach($falImagesAdditionalData[$index] as $falImageAdditionalDataKey => $falImageAdditionalDataValue) {
+                                if (!array_key_exists($falImageAdditionalDataKey, $GLOBALS['TCA']['sys_file_reference']['columns'] ?? [])) {
+                                    continue;
+                                }
+                                $additionalData[$falImageAdditionalDataKey] = $falImageAdditionalDataValue;
+                            }
                         }
                         $migrationHelper->addFlexFalImage(
                             $item,
