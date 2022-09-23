@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SB\DceFceMigration;
 
+use TYPO3\CMS\Core\Utility\ArrayUtility;
 use function json_encode;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -554,5 +555,19 @@ abstract class AbstractMigration
             )
         );
         return $this;
+    }
+
+    /**
+     * @param array $array
+     * @param string $path
+     * @param string $delimiter
+     * @param mixed $default
+     * @return mixed
+     */
+    protected function getArrayValueByPath(array $array, string $path, string $delimiter, $default = null)
+    {
+        return ArrayUtility::isValidPath($array, $path, '/')
+            ? (ArrayUtility::getValueByPath($array, $path, '/') ?? $default)
+            : $default;
     }
 }
