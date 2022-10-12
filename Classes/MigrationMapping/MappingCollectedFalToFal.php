@@ -111,7 +111,7 @@ class MappingCollectedFalToFal extends AbstractMapping
                             $additionalData['showinpreview'] = $isFileReference ? $srcFileReference->getReferenceProperty('showinpreview') : $srcFile->getProperty('showinpreview');
                         }
                         if (array_key_exists($index, $falImagesAdditionalData) && is_array($falImagesAdditionalData[$index] ?? null) && $falImagesAdditionalData[$index] !== []) {
-                            foreach($falImagesAdditionalData[$index] as $falImageAdditionalDataKey => $falImageAdditionalDataValue) {
+                            foreach ($falImagesAdditionalData[$index] as $falImageAdditionalDataKey => $falImageAdditionalDataValue) {
                                 if (!array_key_exists($falImageAdditionalDataKey, $GLOBALS['TCA']['sys_file_reference']['columns'] ?? [])) {
                                     continue;
                                 }
@@ -141,7 +141,7 @@ class MappingCollectedFalToFal extends AbstractMapping
                             $additionalData['showinpreview'] = $isFileReference ? $srcFileReference->getReferenceProperty('showinpreview') : $srcFile->getProperty('showinpreview');
                         }
                         if (array_key_exists($index, $falImagesAdditionalData) && is_array($falImagesAdditionalData[$index] ?? null) && $falImagesAdditionalData[$index] !== []) {
-                            foreach($falImagesAdditionalData[$index] as $falImageAdditionalDataKey => $falImageAdditionalDataValue) {
+                            foreach ($falImagesAdditionalData[$index] as $falImageAdditionalDataKey => $falImageAdditionalDataValue) {
                                 if (!array_key_exists($falImageAdditionalDataKey, $GLOBALS['TCA']['sys_file_reference']['columns'] ?? [])) {
                                     continue;
                                 }
