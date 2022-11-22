@@ -291,6 +291,13 @@ abstract class AbstractMigration
             $data[$this->sourceTable()][(int)$item['source']['uid']][$this->destinationFlexFormField()] = null;
         }
 
+        $directData = null;
+        if ($this->sourceTable() === 'tt_content') {
+            $directData = [
+                'bodytext' => (string)($data[$this->sourceTable()][(int)$item['source']['uid']]['bodytext'] ?? ''),
+            ];
+        }
+
         /** @var DataHandler $dh */
         $dh = GeneralUtility::makeInstance(DataHandler::class);
         $dh->enableLogging = true;
@@ -333,6 +340,18 @@ abstract class AbstractMigration
             $item['updated'] = false;
             $item['errorLog'] = $dh->errorLog;
             return $this;
+        }
+
+        if ($this->sourceTable() === 'tt_content' && is_array($directData) && $directData !== []) {
+            $this->connectionPool
+                ->getConnectionForTable($this->sourceTable())
+                ->update(
+                    $this->sourceTable(),
+                    $directData,
+                    [
+                        'uid' => (int)$item['source']['uid'],
+                    ]
+                );
         }
 
         $item['updated'] = true;
